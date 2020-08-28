@@ -1,6 +1,6 @@
 # Laravel Translations Manager
 
-![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/kfriars/laravel-translations-manage?color=%234ccd98&label=php&logo=php&logoColor=%23fff)
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/kfriars/laravel-translations-manager?color=%234ccd98&label=php&logo=php&logoColor=%23fff)
 ![Laravel Version Support](https://img.shields.io/badge/laravel-6.x--7.x-%2343d399?logo=laravel&logoColor=%23ffffff)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/kfriars/laravel-translations-manager.svg?color=%234ccd98&style=flat-square)](https://packagist.org/packages/kfriars/laravel-translations-manager)
 [![Total Downloads](https://img.shields.io/packagist/dt/kfriars/laravel-translations-manager.svg?color=%234ccd98&style=flat-square)](https://packagist.org/packages/kfriars/laravel-translations-manager)
