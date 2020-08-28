@@ -9,12 +9,14 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, windows-latest]
-        php: [7.4]
-        laravel: [7.*]
+        php: [7.2, 7.3, 7.4]
+        laravel: [6.*, 7.*]
         dependency-version: [prefer-lowest, prefer-stable]
         include:
           - laravel: 7.*
             testbench: 5.*
+          - laravel: 6.*
+            testbench: 4.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
@@ -40,5 +42,54 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
 
-      - name: Execute tests
-        run: vendor/bin/phpunit
+      - name: Execute Windows Tests
+        if: matrix.os == 'windows-latest'
+        run: vendor\bin\phpunit --no-coverage
+
+      - name: Execute Ubuntu Tests
+        if: matrix.os == 'ubuntu-latest'
+        run: composer test
+
+  coverage:
+    needs: [ test ]
+    name: coverage
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        php: [7.4]
+        laravel: [7.*]
+        dependency-version: [prefer-stable]
+        include:
+          - laravel: 7.*
+            testbench: 5.*
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+      
+      - name: Tests with Code Climate Coverage
+        uses: paambaati/codeclimate-action@v2.6.0
+        env:
+          CC_TEST_REPORTER_ID: a2f871ed8af06d8e4e70e0be814ac93e3a10345e879bb46fc871c0d89514367c
+        with:
+          coverageCommand: composer test-coverage
+          coverageLocations: |
+            ${{github.workspace}}/build/logs/clover.xml:clover

@@ -1,0 +1,10 @@
+{
+    "reference": "en",
+    "locale": "ar",
+    "files": [{
+        "file": "it/dont/matter",
+        "translations": {
+            "b.bb.bbb.bbbb": "Ima be ignored anyway :)"
+        }
+    }]
+}

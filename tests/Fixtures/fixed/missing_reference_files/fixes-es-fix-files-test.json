@@ -1,0 +1,10 @@
+{
+    "reference": "en",
+    "locale": "fr",
+    "files": [{
+        "file": "i/dont/exist",
+        "translations": {
+            "some": "Translated string."
+        }
+    }]
+}

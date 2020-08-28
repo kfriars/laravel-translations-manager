@@ -1,0 +1,29 @@
+{
+    "reference": "en",
+    "locale": "fr",
+    "files": [
+        {
+            "file": "email/invite",
+            "translations": {
+                "subject": "You have been invited to join ACME!"
+            }
+        },
+        {
+            "file": "time",
+            "translations": {
+                "year": "Year",
+                "second": "Second"
+            }
+        },
+        {
+            "file": "user",
+            "translations": {
+                "name": {
+                    "first": "First Name",
+                    "last": "Last Name"
+                },
+                "phone.number": "Phone Number"
+            }
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "reference": "en",
+    "locale": "fr",
+    "files": [{
+        "file": "a/b/b",
+        "translations": {
+            "a": "I am definitely not in this file.",
+            "b.bb.bbb.bbbb": "I on the other hand do exist!",
+            "b.a": "I am definitely not in this file."
+        }
+    }]
+}

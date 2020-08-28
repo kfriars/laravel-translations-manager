@@ -1,45 +1,54 @@
 {
-    "name": "spatie/:package_name",
-    "description": ":package_description",
+    "name": "kfriars/laravel-translations-manager",
+    "description": "A tool to manage translations in Laravel",
     "keywords": [
-        "spatie",
-        ":package_name"
+        "kfriars",
+        "laravel-translations-manager"
     ],
-    "homepage": "https://github.com/spatie/:package_name",
+    "homepage": "https://github.com/kfriars/laravel-translations-manager",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
-            "homepage": "https://spatie.be",
+            "name": "Kurt Friars",
+            "email": "kfriars@gmail.com",
+            "homepage": "https://kurtfriars.com",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^7.4"
+        "illuminate/console": "^6|^7",
+        "illuminate/contracts": "^6|^7",
+        "illuminate/filesystem": "^6|^7",
+        "illuminate/support": "^6|^7",
+        "illuminate/translation": "^6|^7",
+        "kfriars/php-array-to-file": "^1.1.2",
+        "league/flysystem": "^1.0.34",
+        "php": "^7.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
-        "orchestra/testbench": "^5.0",
-        "phpunit/phpunit": "^9.0",
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": "^8.0",
         "psalm/plugin-laravel": "^1.2",
         "vimeo/psalm": "^3.11"
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\Skeleton\\": "src"
+            "Kfriars\\TranslationsManager\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\Skeleton\\Tests\\": "tests"
+            "Kfriars\\TranslationsManager\\Tests\\": "tests"
         }
     },
     "scripts": {
-        "psalm": "vendor/bin/psalm",
-        "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
-        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
+        "psalm": "./vendor/bin/psalm",
+        "test": "./vendor/bin/phpunit --no-coverage",
+        "unit-test": "./vendor/bin/phpunit --no-coverage --testsuite Unit",
+        "feature-test": "./vendor/bin/phpunit --no-coverage --testsuite Feature",
+        "test-coverage": "./vendor/bin/phpunit --coverage-html coverage",
+        "format": "./vendor/bin/php-cs-fixer fix --allow-risky=yes"
     },
     "config": {
         "sort-packages": true
@@ -47,10 +56,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\Skeleton\\SkeletonServiceProvider"
+                "Kfriars\\TranslationsManager\\TranslationsManagerServiceProvider",
+                "Kfriars\\TranslationsManager\\Providers\\DeferredServicesProvider"
             ],
             "aliases": {
-                "Skeleton": "Spatie\\Skeleton\\SkeletonFacade"
             }
         }
     },

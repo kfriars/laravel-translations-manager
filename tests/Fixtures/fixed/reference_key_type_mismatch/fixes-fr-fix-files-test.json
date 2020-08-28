@@ -1,0 +1,11 @@
+{
+    "reference": "en",
+    "locale": "fr",
+    "files": [{
+        "file": "a/b/b",
+        "translations": {
+            "b.bb.bbb.bbbb": "No Problem",
+            "b.bb.bbb.bbbb.uh_oh": "I will exist, but get a type mismatch in the chain!"
+        }
+    }]
+}

@@ -1,0 +1,10 @@
+{
+    "reference": "en",
+    "locale": "de",
+    "files": [{
+        "file": "a",
+        "translations": {
+            "a.aa.aaa.aaaa": "In German!"
+        }
+    }]
+}
