@@ -18,24 +18,20 @@ class DirectorySeparatorTest extends TestCase
         $mock->shouldReceive('isBackslashDirectorySeparator')
             ->andReturn(true);
 
-        $result = $mock->convertDirectorySeparators('a/b/c/d');
-
-        $this->assertEquals('a\b\c\d', $result);
+        $this->assertEquals('a\b\c\d', $mock->convertDirectorySeparators('a/b/c/d'));
     }
 
     /** @test */
     public function it_returns_forwardslashes_otherwise()
     {
         $mock = Mockery::mock(TestDirectorySeparators::class)
-                    ->shouldAllowMockingProtectedMethods()
-                    ->makePartial();
+                    ->makePartial()
+                    ->shouldAllowMockingProtectedMethods();
 
         $mock->shouldReceive('isBackslashDirectorySeparator')
             ->andReturn(false);
 
-        $result = $mock->convertDirectorySeparators('a\b\c\d');
-
-        $this->assertEquals('a/b/c/d', $result);
+        $this->assertEquals('a/b/c/d', $mock->convertDirectorySeparators('a\b\c\d'));
     }
 }
 
