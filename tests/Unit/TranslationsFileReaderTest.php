@@ -2,26 +2,28 @@
 
 namespace Kfriars\TranslationsManager\Tests\Unit;
 
-use Kfriars\TranslationsManager\Contracts\FileReaderContract;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
+use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 use Kfriars\TranslationsManager\Tests\TestCase;
 use LogicException;
 use ReflectionObject;
 
-class TranslationsFileReaderTest extends TestCase
+class TranslationsFilesTest extends TestCase
 {
-    /** @var FileReaderContract */
+    /** @var TranslationsFilesContract */
     protected $files;
 
     protected function makeDependencies(): void
     {
-        $this->files = $this->app->make(FileReaderContract::class);
+        $this->config = $this->app->make(ConfigContract::class);
+        $this->files = $this->app->make(TranslationsFilesContract::class);
     }
 
     /** @test */
     public function it_correctly_lists_the_lang_folders()
     {
-        $locales = $this->files->localeFolders();
+        $locales = $this->config->availableLocales();
 
         $this->assertEquals(['de', 'en', 'es', 'fr'], $locales);
     }

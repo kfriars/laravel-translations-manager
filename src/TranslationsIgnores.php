@@ -2,7 +2,8 @@
 
 namespace Kfriars\TranslationsManager;
 
-use Kfriars\TranslationsManager\Contracts\FileWriterContract;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
+use Kfriars\TranslationsManager\Contracts\ArrayFileContract;
 use Kfriars\TranslationsManager\Contracts\IgnoresContract;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 
@@ -11,18 +12,19 @@ class TranslationsIgnores implements IgnoresContract
     /** @var string */
     protected $ignoresFile;
 
-    /** @var FileWriterContract */
-    protected $writer;
+    /** @var ArrayFileContract */
+    protected $arrayFile;
     
     /** @var array */
     protected $ignores;
 
     public function __construct(
-        FileWriterContract $writer
+        ConfigContract $config,
+        ArrayFileContract $arrayFile
     ) {
-        $this->writer = $writer;
-        $this->ignoresFile = config('translations-manager.ignores');
-        $this->ignores = $this->ignoresFromFile($this->ignoresFile);
+        $this->arrayFile = $arrayFile;
+        $this->ignoresFile = $config->ignoresPath();
+        $this->ignores = $this->ignoresFromFile();
     }
 
     /**
@@ -66,7 +68,7 @@ class TranslationsIgnores implements IgnoresContract
             $this->ignores[$locale][$file][$key] = true;
         }
 
-        $this->writer->writeArray($this->ignores, $this->ignoresFile);
+        $this->arrayFile->write($this->ignores, $this->ignoresFile);
     }
 
     /**
@@ -97,7 +99,7 @@ class TranslationsIgnores implements IgnoresContract
             unset($this->ignores[$locale]);
         }
 
-        $this->writer->writeArray($this->ignores, $this->ignoresFile);
+        $this->arrayFile->write($this->ignores, $this->ignoresFile);
     }
 
     /**
@@ -117,14 +119,10 @@ class TranslationsIgnores implements IgnoresContract
      * @return array
      * @throws TranslationsManagerException
      */
-    protected function ignoresFromFile(?string $filepath): array
+    protected function ignoresFromFile(): array
     {
-        if ($filepath === null) {
-            throw new TranslationsManagerException("You do not have 'ignores' configured for translations-manager.");
-        }
-
         if (! file_exists($this->ignoresFile)) {
-            $this->writer->writeArray([], $filepath);
+            $this->arrayFile->write([], $this->ignoresFile);
         }
 
         return (include $this->ignoresFile);

@@ -3,25 +3,31 @@
 namespace Kfriars\TranslationsManager;
 
 use Kfriars\ArrayToFile\Exceptions\FileSaveException;
-use Kfriars\TranslationsManager\Contracts\FileWriterContract;
+use Kfriars\TranslationsManager\Concerns\HandlesDirectorySeparators;
+use Kfriars\TranslationsManager\Contracts\ArrayFileContract;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\LockfilesContract;
 
 class TranslationsLockfiles implements LockfilesContract
 {
+    use HandlesDirectorySeparators;
+    
     /** @var string */
     protected $referenceLocale;
 
     /** @var string */
     protected $lockDirectory;
     
-    /** @var FileWriterContract */
-    protected $writer;
+    /** @var ArrayFileContract */
+    protected $arrayFile;
 
-    public function __construct(FileWriterContract $writer)
-    {
-        $this->writer = $writer;
-        $this->referenceLocale = config('translations-manager.reference_locale');
-        $this->lockDirectory = config('translations-manager.lock_dir');
+    public function __construct(
+        ConfigContract $config,
+        ArrayFileContract $arrayFile
+    ) {
+        $this->arrayFile = $arrayFile;
+        $this->referenceLocale = $config->referenceLocale();
+        $this->lockDirectory = $config->lockDir();
     }
 
     /**
@@ -56,7 +62,7 @@ class TranslationsLockfiles implements LockfilesContract
         $reference = __($langFile, [], $this->referenceLocale);
         $filename = $this->lockpath($langFile);
         
-        $this->writer->writeArray($reference, $filename);
+        $this->arrayFile->write($reference, $filename);
     }
 
     /**
@@ -67,9 +73,7 @@ class TranslationsLockfiles implements LockfilesContract
      */
     public function lockpath(string $langFile): string
     {
-        if (DIRECTORY_SEPARATOR === "\\") {
-            $langFile = str_replace("/", DIRECTORY_SEPARATOR, $langFile);
-        }
+        $langFile = $this->convertDirectorySeparators($langFile);
         
         return $this->lockDirectory.DIRECTORY_SEPARATOR.$langFile.'.php';
     }

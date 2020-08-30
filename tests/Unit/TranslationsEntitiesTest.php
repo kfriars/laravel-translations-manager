@@ -11,19 +11,19 @@ use Kfriars\TranslationsManager\Tests\TestCase;
 class TranslationsEntitiesTest extends TestCase
 {
     /** @var Listing */
-    private $listing;
+    protected $listing;
 
     /** @var Locale */
-    private $locale;
+    protected $locale;
 
     /** @var TranslationsFile */
-    private $file;
+    protected $file;
 
     /** @var Error */
-    private $critical;
+    protected $critical;
 
     /** @var Error */
-    private $noncritical;
+    protected $noncritical;
 
     protected function makeDependencies(): void
     {

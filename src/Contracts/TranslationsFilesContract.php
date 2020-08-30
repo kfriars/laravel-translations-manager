@@ -2,15 +2,8 @@
 
 namespace Kfriars\TranslationsManager\Contracts;
 
-interface FileReaderContract
+interface TranslationsFilesContract
 {
-    /**
-     * Get the names of all of the locales defined in the lang folder directory
-     *
-     * @return array
-     */
-    public function localeFolders(): array;
-
     /**
      * List all translations files for a given locale
      *

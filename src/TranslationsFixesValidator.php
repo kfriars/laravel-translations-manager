@@ -4,41 +4,44 @@ namespace Kfriars\TranslationsManager;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Translation\Translator;
 use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\FixesValidatorContract;
+use Kfriars\TranslationsManager\Contracts\FormatterContract;
 use Kfriars\TranslationsManager\Contracts\ListingContract;
 use Kfriars\TranslationsManager\Entities\Error;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 
 class TranslationsFixesValidator implements FixesValidatorContract
 {
+    /** @var string */
+    protected $fixedDir;
+
     /** @var Filesystem */
-    private $fixedFiles;
+    protected $fixedFiles;
+    
+    /** @var FormatterContract */
+    protected $formatter;
 
     /** @var Translator */
-    private $translator;
+    protected $translator;
 
     /** @var string */
-    private $fixedDir;
-
-    /** @var string */
-    private $referenceLocale;
+    protected $referenceLocale;
 
     /** @var string[] */
-    private $supportedLocales;
+    protected $supportedLocales;
 
     public function __construct(
-        FilesystemManager $manager,
         ConfigContract $config,
+        FormatterContract $formatter,
         Translator $translator
     ) {
-        $this->fixedDir = config('translations-manager.fixed_dir');
-        $this->fixedFiles = $manager->createLocalDriver(['root' => $this->fixedDir]);
-        
+        $this->formatter = $formatter;
         $this->translator = $translator;
 
+        $this->fixedDir = $config->fixedDir();
+        $this->fixedFiles = $config->fixed();
         $this->referenceLocale = $config->referenceLocale();
         $this->supportedLocales = $config->supportedLocales();
     }
@@ -216,14 +219,7 @@ class TranslationsFixesValidator implements FixesValidatorContract
      */
     protected function validateFiles(string $locale, string $file)
     {
-        $content = $this->fixedFiles->get($file);
-        $fixed = json_decode($content, true);
-
-        if ($fixed === null) {
-            throw new TranslationsManagerException(
-                "The file '{$file}' does not contain well formed JSON."
-            );
-        }
+        $fixed = $this->formatter->read($file);
 
         foreach ($fixed['files'] as $file) {
             if (! $this->translator->has($file['file'], $fixed['reference'])) {

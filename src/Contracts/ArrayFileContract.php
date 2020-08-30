@@ -4,7 +4,7 @@ namespace Kfriars\TranslationsManager\Contracts;
 
 use Kfriars\ArrayToFile\Exceptions\FileSaveException;
 
-interface FileWriterContract
+interface ArrayFileContract
 {
     /**
      * Write an array to an includeable php file
@@ -15,5 +15,5 @@ interface FileWriterContract
      * @return void
      * @throws FileSaveException
      */
-    public function writeArray(array $array, string $filepath, callable $transform = null): void;
+    public function write(array $array, string $filepath, callable $transform = null): void;
 }

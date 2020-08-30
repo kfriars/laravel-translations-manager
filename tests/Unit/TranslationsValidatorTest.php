@@ -2,14 +2,14 @@
 
 namespace Kfriars\TranslationsManager\Tests\Unit;
 
-use Kfriars\TranslationsManager\Contracts\FileReaderContract;
+use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
 use Kfriars\TranslationsManager\Contracts\ValidatorContract;
 use Kfriars\TranslationsManager\Tests\TestCase;
 use ReflectionObject;
 
 class TranslationsValidatorTest extends TestCase
 {
-    /** @var FileReaderContract */
+    /** @var TranslationsFilesContract */
     protected $files;
 
     /** @var ValidatorContract */
@@ -17,7 +17,7 @@ class TranslationsValidatorTest extends TestCase
 
     protected function makeDependencies(): void
     {
-        $this->files = $this->app->make(FileReaderContract::class);
+        $this->files = $this->app->make(TranslationsFilesContract::class);
         $this->validator = $this->app->make(ValidatorContract::class);
     }
 

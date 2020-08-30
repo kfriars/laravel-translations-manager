@@ -3,7 +3,7 @@
 namespace Kfriars\TranslationsManager;
 
 use Kfriars\TranslationsManager\Contracts\ConfigContract;
-use Kfriars\TranslationsManager\Contracts\FileReaderContract;
+use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
 use Kfriars\TranslationsManager\Contracts\ListingContract;
 use Kfriars\TranslationsManager\Contracts\ManagerContract;
 use Kfriars\TranslationsManager\Contracts\ValidatorContract;
@@ -12,7 +12,7 @@ use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 
 class TranslationsManager implements ManagerContract
 {
-    /** @var FileReaderContract */
+    /** @var TranslationsFilesContract */
     protected $files;
 
     /** @var ValidatorContract */
@@ -28,7 +28,7 @@ class TranslationsManager implements ManagerContract
     protected $supportedLocales = [];
 
     public function __construct(
-        FileReaderContract $files,
+        TranslationsFilesContract $files,
         ConfigContract $config,
         ValidatorContract $validator
     ) {

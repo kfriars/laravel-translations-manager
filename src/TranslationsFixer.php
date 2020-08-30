@@ -4,70 +4,62 @@ namespace Kfriars\TranslationsManager;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Translation\Translator;
 use Kfriars\ArrayToFile\Exceptions\FileSaveException;
-use Kfriars\TranslationsManager\Contracts\FileWriterContract;
+use Kfriars\TranslationsManager\Concerns\HandlesDirectorySeparators;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
+use Kfriars\TranslationsManager\Contracts\ArrayFileContract;
 use Kfriars\TranslationsManager\Contracts\FixerContract;
 use Kfriars\TranslationsManager\Contracts\FixesValidatorContract;
+use Kfriars\TranslationsManager\Contracts\FormatterContract;
 use Kfriars\TranslationsManager\Contracts\ListingContract;
+use Kfriars\TranslationsManager\Contracts\LocaleContract;
 use Kfriars\TranslationsManager\Contracts\LockfilesContract;
+use Kfriars\TranslationsManager\Contracts\TranslationsFileContract;
 use Kfriars\TranslationsManager\Entities\Error;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 
 class TranslationsFixer implements FixerContract
 {
-    /** @var Filesystem */
-    private $toFixFiles;
+    use HandlesDirectorySeparators;
 
-    /** @var Filesystem */
-    private $fixedFiles;
+    /** @var FormatterContract */
+    protected $formatter;
 
-    /** @var FileWriterContract */
-    private $writer;
+    /** @var ArrayFileContract */
+    protected $arrayFile;
 
     /** @var FixesValidatorContract */
-    private $validator;
+    protected $validator;
 
     /** @var LockfilesContract */
-    private $lockfiles;
+    protected $lockfiles;
 
     /** @var Translator */
-    private $translator;
+    protected $translator;
 
     /** @var string */
-    private $langDir;
+    protected $langDir;
 
     /** @var string */
-    private $toFixDir;
-
-    /** @var string */
-    private $fixedDir;
-
-    /** @var string */
-    private $nameFormat;
+    protected $nameFormat;
 
     public function __construct(
-        FilesystemManager $manager,
-        FileWriterContract $writer,
+        ConfigContract $config,
+        FormatterContract $formatter,
+        ArrayFileContract $arrayFile,
         FixesValidatorContract $validator,
         LockfilesContract $lockfiles,
         Translator $translator
     ) {
-        $this->toFixDir = config('translations-manager.fixes_dir');
-        $this->fixedDir = config('translations-manager.fixed_dir');
-
-        $this->toFixFiles = $manager->createLocalDriver(['root' => $this->toFixDir]);
-        $this->fixedFiles = $manager->createLocalDriver(['root' => $this->fixedDir]);
-        
-        $this->writer = $writer;
+        $this->formatter = $formatter;
+        $this->arrayFile = $arrayFile;
         $this->validator = $validator;
         $this->lockfiles = $lockfiles;
         $this->translator = $translator;
 
-        $this->langDir = config('translations-manager.lang_dir');
-        $this->nameFormat = config('translations-manager.fix_name_format');
+        $this->langDir = $config->langDir();
+        $this->nameFormat = $config->fixNameFormat();
     }
 
     /**
@@ -82,46 +74,67 @@ class TranslationsFixer implements FixerContract
         $this->validator->validateGenerate($listing);
 
         foreach ($listing->locales()->all() as $locale) {
-            $translations = [
-                'reference' => $listing->referenceLocale(),
-                'locale' => $locale->code(),
-                'files' => [],
-            ];
+            $translations = $this->generateForLocale($listing->referenceLocale(), $locale);
 
-            foreach ($locale->files()->all() as $file) {
-                if ($file->errors()->contains('message', Error::FILE_NOT_TRANSLATED)) {
-                    $translations['files'][] = [
-                        'file' => $file->path(),
-                        'translations' => $this->translator->get($file->path(), [], $listing->referenceLocale()),
-                    ];
-                    
-                    continue;
-                }
+            $name = $this->filename($locale->code());
+            $this->formatter->write($name, $translations);
+        }
+    }
 
-                $toTranslate = [
+    /**
+     * List all the fixes for a locale
+     *
+     * @param string $referenceLocale
+     * @param LocaleContract $locale
+     * @return array
+     */
+    protected function generateForLocale(string $referenceLocale, LocaleContract $locale): array
+    {
+        $fixes = [
+            'reference' => $referenceLocale,
+            'locale' => $locale->code(),
+            'files' => [],
+        ];
+
+        foreach ($locale->files()->all() as $file) {
+            $translations = $this->generateForFile($referenceLocale, $file);
+            
+            if ($translations) {
+                $fixes['files'][] = [
                     'file' => $file->path(),
-                    'translations' => [],
+                    'translations' => $translations
                 ];
+            }
+        }
 
-                foreach ($file->errors()->all() as $error) {
-                    if ($error->message() === Error::NO_REFERENCE_TRANSLATION) {
-                        continue;
-                    }
+        return $fixes;
+    }
 
-                    $translation = $this->translator->get($error->fullKey(), [], $listing->referenceLocale());
-                    $toTranslate['translations'][$error->key()] = $translation;
-                }
+    /**
+     * List all the translations that need to be fixed in a file
+     *
+     * @param string $referenceLocale
+     * @param TranslationsFileContract $file
+     * @return array
+     */
+    protected function generateForFile(string $referenceLocale, TranslationsFileContract $file): array
+    {
+        if ($file->errors()->contains('message', Error::FILE_NOT_TRANSLATED)) {
+            return $this->translator->get($file->path(), [], $referenceLocale);
+        }
 
-                if (count($toTranslate['translations'])) {
-                    $translations['files'][] = $toTranslate;
-                }
+        $translations = [];
+
+        foreach ($file->errors()->all() as $error) {
+            if ($error->message() === Error::NO_REFERENCE_TRANSLATION) {
+                continue;
             }
 
-            $this->toFixFiles->put(
-                $this->filename($locale->code()),
-                json_encode($translations, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
-            );
+            $translation = $this->translator->get($error->fullKey(), [], $referenceLocale);
+            $translations[$error->key()] = $translation;
         }
+
+        return $translations;
     }
 
     /**
@@ -150,8 +163,7 @@ class TranslationsFixer implements FixerContract
         $fixes = $this->validator->validateFixes($locales);
 
         foreach ($fixes as $locale => $file) {
-            $content = $this->fixedFiles->get($file);
-            $fixed = json_decode($content, true);
+            $fixed = $this->formatter->read($file);
 
             $this->healLocale($locale, $fixed);
         }
@@ -178,10 +190,10 @@ class TranslationsFixer implements FixerContract
             $lockfile = $this->lockfiles->getLockfile($filepath);
 
             $this->healFile($file['translations'], $dependent, $lockfile, $reference);
-            $this->writer->writeArray($dependent, $this->langFilePath($locale, $filepath));
+            $this->arrayFile->write($dependent, $this->langFilePath($locale, $filepath));
 
             $lockpath = $this->lockfiles->lockpath($filepath);
-            $this->writer->writeArray($lockfile, $lockpath);
+            $this->arrayFile->write($lockfile, $lockpath);
         }
     }
 
@@ -282,7 +294,7 @@ class TranslationsFixer implements FixerContract
             }
             
             $filepath = $this->langFilePath($error->locale(), $error->file());
-            $this->writer->writeArray($translations, $filepath);
+            $this->arrayFile->write($translations, $filepath);
         }
 
         return count($dead);
@@ -339,9 +351,7 @@ class TranslationsFixer implements FixerContract
      */
     protected function langFilePath(string $locale, string $file): string
     {
-        if (DIRECTORY_SEPARATOR === "\\") {
-            $file = str_replace("/", DIRECTORY_SEPARATOR, $file);
-        }
+        $file = $this->convertDirectorySeparators($file);
 
         return $this->langDir.DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR.$file.'.php';
     }

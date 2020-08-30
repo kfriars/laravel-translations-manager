@@ -2,6 +2,7 @@
 
 namespace Kfriars\TranslationsManager\Tests\Unit;
 
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\IgnoresContract;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 use Kfriars\TranslationsManager\Tests\TestCase;
@@ -11,26 +12,19 @@ class TranslationsIgnoresTest extends TestCase
     /** @var IgnoresContract */
     protected $ignores;
     
+    /** @var ConfigContract */
+    protected $config;
+
     protected function makeDependencies(): void
     {
+        $this->config = $this->app->make(ConfigContract::class);
         $this->ignores = $this->app->make(IgnoresContract::class);
-    }
-
-    /** @test */
-    public function it_throws_an_error_when_ignores_is_not_configured()
-    {
-        config(['translations-manager.ignores' => null]);
-
-        $this->expectException(TranslationsManagerException::class);
-        $this->expectExceptionMessage("You do not have 'ignores' configured for translations-manager.");
-        
-        app()->instance(IgnoresContract::class, null);
     }
 
     /** @test */
     public function it_creates_a_new_ignores_file_if_it_does_not_exist()
     {
-        $file = config('translations-manager.ignores');
+        $file = $this->config->ignoresPath();
 
         /** @var \Illuminate\Filesystem\Filesystem $filesystem */
         $filesystem = $this->app['files'];
@@ -61,7 +55,7 @@ class TranslationsIgnoresTest extends TestCase
             ],
         ], $all);
         
-        $inFile = include config('translations-manager.ignores');
+        $inFile = include $this->config->ignoresPath();
         $this->assertEquals($all, $inFile);
     }
 
@@ -80,7 +74,7 @@ class TranslationsIgnoresTest extends TestCase
             ],
         ], $all);
         
-        $inFile = include config('translations-manager.ignores');
+        $inFile = include $this->config->ignoresPath();
         $this->assertEquals($all, $inFile);
     }
 
@@ -99,7 +93,7 @@ class TranslationsIgnoresTest extends TestCase
             ],
         ], $all);
         
-        $inFile = include config('translations-manager.ignores');
+        $inFile = include $this->config->ignoresPath();
         $this->assertEquals($all, $inFile);
     }
 
@@ -118,7 +112,7 @@ class TranslationsIgnoresTest extends TestCase
             ],
         ], $all);
         
-        $inFile = include config('translations-manager.ignores');
+        $inFile = include $this->config->ignoresPath();
         $this->assertEquals($all, $inFile);
     }
 

@@ -4,10 +4,13 @@ namespace Kfriars\TranslationsManager;
 
 use Kfriars\ArrayToFile\ArrayToFile;
 use Kfriars\ArrayToFile\Exceptions\FileSaveException;
-use Kfriars\TranslationsManager\Contracts\FileWriterContract;
+use Kfriars\TranslationsManager\Concerns\HandlesDirectorySeparators;
+use Kfriars\TranslationsManager\Contracts\ArrayFileContract;
 
-class TranslationsFileWriter implements FileWriterContract
+class TranslationsArrayFile implements ArrayFileContract
 {
+    use HandlesDirectorySeparators;
+    
     /** @var ArrayToFile */
     protected $a2f;
 
@@ -25,11 +28,9 @@ class TranslationsFileWriter implements FileWriterContract
      * @return void
      * @throws FileSaveException
      */
-    public function writeArray(array $array, string $filepath, callable $transform = null): void
+    public function write(array $array, string $filepath, callable $transform = null): void
     {
-        if (DIRECTORY_SEPARATOR === "\\") {
-            $filepath = str_replace("/", DIRECTORY_SEPARATOR, $filepath);
-        }
+        $filepath = $this->convertDirectorySeparators($filepath);
 
         $this->a2f->write($array, $filepath, $transform);
     }

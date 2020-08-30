@@ -16,31 +16,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Translations Lock Files Path
-    |--------------------------------------------------------------------------
-    |
-    | This is the folder where this package will store its version locks for
-    | your translations files. This folder must not be in .gitignore to have this
-    | package function correctly.
-    |
-    */
-
-    'lock_dir' => storage_path('translations'.DIRECTORY_SEPARATOR.'lock'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Translations Ignore File
-    |--------------------------------------------------------------------------
-    |
-    | This is the file where this package will store which translations errors
-    | will be ignored.
-    |
-    */
-
-    'ignores' => storage_path('translations'.DIRECTORY_SEPARATOR.'ignores.php'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Reference Locales
     |--------------------------------------------------------------------------
     |
@@ -73,11 +48,10 @@ return [
     |
     | The fix files are used to fix errors in the translations.
     |
-    | 'fixes_dir' is where fix file will be generated with the strings that
-    | require translations.
-    |
-    | 'fixed_dir' is where you place translated fix files to be parsed by the
-    | package and automatically fix your files.
+    | 'formatter' is the class that will be used to write and parse the fix files.
+    | The default format is a JSON format, since it is easily readable by humans
+    | and reliably parseable. You can implement your own formatter as long as it
+    | implements the FormatterContract.
     |
     | 'fix_name_format' is the way fix files will be named. The currently
     | supported formats are 'git' and 'date'.
@@ -86,7 +60,6 @@ return [
     | 'date' format is 'fixes-{locale}-{Y-m-d}.txt'
     |
     */
-    'fixes_dir' => storage_path('translations'.DIRECTORY_SEPARATOR.'fixes'),
-    'fixed_dir' => storage_path('translations'.DIRECTORY_SEPARATOR.'fixed'),
+    'formatter' => Kfriars\TranslationsManager\TranslationsFixesJSONFormatter::class,
     'fix_name_format' => 'git',
 ];

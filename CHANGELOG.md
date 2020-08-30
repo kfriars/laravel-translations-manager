@@ -6,6 +6,6 @@ All notable changes to `laravel-translations-manager` will be documented in this
 
 - initial release
 
-## 1.0.1 - 2020-08-27
+## 1.0.1 - 2020-08-30
 
-- Fix php version readme badge
+- Refactoring for maintainability, and made fix file formats extendable

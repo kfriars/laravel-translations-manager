@@ -4,6 +4,7 @@ namespace Kfriars\TranslationsManager\Tests\Unit;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\FixerContract;
 use Kfriars\TranslationsManager\Contracts\ManagerContract;
 use Kfriars\TranslationsManager\Entities\Error;
@@ -12,14 +13,18 @@ use Kfriars\TranslationsManager\Tests\TestCase;
 
 class TranslationsFixerTest extends TestCase
 {
+    /** @var ConfigContract */
+    protected $config;
+    
     /** @var ManagerContract */
     protected $manager;
     
     /** @var FixerContract */
     protected $fixer;
-    
+
     protected function makeDependencies(): void
     {
+        $this->config = $this->app->make(ConfigContract::class);    
         $this->manager = $this->app->make(ManagerContract::class);
         $this->fixer = $this->app->make(FixerContract::class);
     }
@@ -28,22 +33,21 @@ class TranslationsFixerTest extends TestCase
     public function it_writes_fix_files_for_all_errors_in_a_listing()
     {
         /** @var Filesystem */
-        $filesystem = $this->app['files'];
-        $fixesPath = config('translations-manager.fixes_dir');
+        $filesystem = $this->config->fixes();
 
         $this->loadScenario($this->app, 'write_fixes');
         $this->setGitBranchName($this->app, 'write-fixes-test');
         
-        $fixes = $filesystem->files($fixesPath);
+        $fixes = $filesystem->files();
         $this->assertCount(0, $fixes);
 
         $listing = $this->manager->listing();
         $this->fixer->generateFixFiles($listing);
 
-        $fixes = $filesystem->files($fixesPath);
+        $fixes = $filesystem->files();
         $this->assertCount(3, $fixes);
 
-        $deJson = $filesystem->get($fixesPath.DIRECTORY_SEPARATOR.'fixes-de-write-fixes-test.json');
+        $deJson = $filesystem->get('fixes-de-write-fixes-test.json');
         $deFixes = json_decode($deJson, true);
 
         $this->assertEquals([
@@ -84,7 +88,7 @@ class TranslationsFixerTest extends TestCase
             ]],
         ], $deFixes);
         
-        $esJson = $filesystem->get($fixesPath.DIRECTORY_SEPARATOR.'fixes-es-write-fixes-test.json');
+        $esJson = $filesystem->get('fixes-es-write-fixes-test.json');
         $esFixes = json_decode($esJson, true);
 
         $this->assertEquals([
@@ -131,7 +135,7 @@ class TranslationsFixerTest extends TestCase
             ]],
         ], $esFixes);
 
-        $frJson = $filesystem->get($fixesPath.DIRECTORY_SEPARATOR.'fixes-fr-write-fixes-test.json');
+        $frJson = $filesystem->get('fixes-fr-write-fixes-test.json');
         $frFixes = json_decode($frJson, true);
 
         $this->assertEquals([
@@ -211,22 +215,21 @@ class TranslationsFixerTest extends TestCase
         config(['translations-manager.fix_name_format' => 'date']);
 
         /** @var Filesystem */
-        $filesystem = $this->app['files'];
-        $fixesPath = config('translations-manager.fixes_dir');
+        $filesystem = $this->config->fixes();
 
         $this->loadScenario($this->app, 'write_fixes');
         
-        $fixes = $filesystem->files($fixesPath);
+        $fixes = $filesystem->files();
         $this->assertCount(0, $fixes);
 
         $listing = $this->manager->listing();
         $this->fixer->generateFixFiles($listing);
 
-        $fixes = $filesystem->files($fixesPath);
+        $fixes = $filesystem->files();
 
-        $this->assertEquals('fixes-de-2020-08-29.json', $fixes[0]->getFilename());
-        $this->assertEquals('fixes-es-2020-08-29.json', $fixes[1]->getFilename());
-        $this->assertEquals('fixes-fr-2020-08-29.json', $fixes[2]->getFilename());
+        $this->assertEquals('fixes-de-2020-08-29.json', $fixes[0]);
+        $this->assertEquals('fixes-es-2020-08-29.json', $fixes[1]);
+        $this->assertEquals('fixes-fr-2020-08-29.json', $fixes[2]);
     }
 
     /** @test */

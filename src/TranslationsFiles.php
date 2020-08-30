@@ -5,11 +5,15 @@ namespace Kfriars\TranslationsManager;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use InvalidArgumentException;
-use Kfriars\TranslationsManager\Contracts\FileReaderContract;
+use Kfriars\TranslationsManager\Concerns\HandlesDirectorySeparators;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
+use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 
-class TranslationsFileReader implements FileReaderContract
+class TranslationsFiles implements TranslationsFilesContract
 {
+    use HandlesDirectorySeparators;
+
     /** @var FilesystemManager */
     protected $manager;
 
@@ -17,23 +21,11 @@ class TranslationsFileReader implements FileReaderContract
     protected $langDirectory;
     
     public function __construct(
+        ConfigContract $config,
         FilesystemManager $manager
     ) {
         $this->manager = $manager;
-        $this->langDirectory = config('translations-manager.lang_dir');
-    }
-
-    /**
-     * Get the names of all of the locales defined in the lang folder directory
-     *
-     * @return array
-     */
-    public function localeFolders(): array
-    {
-        $locales = $this->manager->createLocalDriver(['root' => $this->langDirectory])
-                                 ->directories();
-
-        return $locales;
+        $this->langDirectory = $config->langDir();
     }
 
     /**
@@ -45,9 +37,7 @@ class TranslationsFileReader implements FileReaderContract
      */
     public function listLocale(string $locale, ?string $subfolder = null): array
     {
-        if (DIRECTORY_SEPARATOR === "\\") {
-            $subfolder = str_replace("/", DIRECTORY_SEPARATOR, $subfolder);
-        }
+        $subfolder = $this->convertDirectorySeparators($subfolder);
 
         if ($subfolder && $subfolder[0] === DIRECTORY_SEPARATOR) {
             throw new TranslationsManagerException('You can only reference translations folders using a relative path.');

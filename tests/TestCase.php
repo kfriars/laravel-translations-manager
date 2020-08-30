@@ -5,10 +5,12 @@ namespace Kfriars\TranslationsManager\Tests;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Translation\TranslationServiceProvider;
 use Kfriars\TranslationsManager\Contracts\FixerContract;
+use Kfriars\TranslationsManager\Contracts\FormatterContract;
 use Kfriars\TranslationsManager\Contracts\IgnoresContract;
 use Kfriars\TranslationsManager\Entities\ErrorCollection;
 use Kfriars\TranslationsManager\Providers\DeferredServicesProvider;
 use Kfriars\TranslationsManager\Tests\Traits\TestsCommands;
+use Kfriars\TranslationsManager\TranslationsFixesJSONFormatter;
 use Kfriars\TranslationsManager\TranslationsManagerServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use PHPUnit\Framework\Exception;
@@ -56,13 +58,11 @@ abstract class TestCase extends Orchestra
         ]);
 
         $config->set('translations-manager', [
+            'storage_dir' => storage_path('translations'),
             'lang_dir' => resource_path('lang'),
-            'lock_dir' => storage_path('translations'.DIRECTORY_SEPARATOR.'lock'),
-            'ignores' => storage_path('translations'.DIRECTORY_SEPARATOR.'ignores.php'),
             'reference_locale' => 'en',
-            'fixes_dir' => storage_path('translations'.DIRECTORY_SEPARATOR.'fixes'),
-            'fixed_dir' => storage_path('translations'.DIRECTORY_SEPARATOR.'fixed'),
             'fix_name_format' => 'git',
+            'formatter' => TranslationsFixesJSONFormatter::class,
         ]);
         
         $this->loadScenario($app);
@@ -108,9 +108,10 @@ abstract class TestCase extends Orchestra
      */
     protected function reloadDependencies(Application $app): void
     {
-        $app->instance(FileWriterContract::class, null);
-        $app->instance(FileReaderContract::class, null);
+        $app->instance(ArrayFileContract::class, null);
+        $app->instance(TranslationsFilesContract::class, null);
         $app->instance(ConfigContract::class, null);
+        $app->instance(FormatterContract::class, null);
         $app->instance(LockfilesContract::class, null);
         $app->instance(IgnoresContract::class, null);
         $app->instance(ValidatorContract::class, null);
@@ -145,7 +146,7 @@ abstract class TestCase extends Orchestra
 
         $filesystem->copyDirectory(
             realpath(__DIR__.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$folder),
-            realpath(resource_path('lang'))
+            resource_path('lang')
         );
 
         return $this;

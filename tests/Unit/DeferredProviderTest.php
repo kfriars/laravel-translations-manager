@@ -3,10 +3,11 @@
 namespace Kfriars\TranslationsManager\Tests\Unit;
 
 use Kfriars\TranslationsManager\Contracts\ConfigContract;
-use Kfriars\TranslationsManager\Contracts\FileReaderContract;
-use Kfriars\TranslationsManager\Contracts\FileWriterContract;
+use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
+use Kfriars\TranslationsManager\Contracts\ArrayFileContract;
 use Kfriars\TranslationsManager\Contracts\FixerContract;
 use Kfriars\TranslationsManager\Contracts\FixesValidatorContract;
+use Kfriars\TranslationsManager\Contracts\FormatterContract;
 use Kfriars\TranslationsManager\Contracts\IgnoresContract;
 use Kfriars\TranslationsManager\Contracts\LockfilesContract;
 use Kfriars\TranslationsManager\Contracts\ManagerContract;
@@ -22,9 +23,10 @@ class DefereredProviderTest extends TestCase
         $provider = new DeferredServicesProvider($this->app);
 
         $this->assertEquals([
-            FileWriterContract::class,
-            FileReaderContract::class,
+            ArrayFileContract::class,
+            TranslationsFilesContract::class,
             ConfigContract::class,
+            FormatterContract::class,
             LockfilesContract::class,
             IgnoresContract::class,
             ValidatorContract::class,
