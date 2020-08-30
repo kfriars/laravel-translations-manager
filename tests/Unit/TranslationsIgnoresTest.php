@@ -4,7 +4,6 @@ namespace Kfriars\TranslationsManager\Tests\Unit;
 
 use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\IgnoresContract;
-use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 use Kfriars\TranslationsManager\Tests\TestCase;
 
 class TranslationsIgnoresTest extends TestCase

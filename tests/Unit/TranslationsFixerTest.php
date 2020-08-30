@@ -24,7 +24,7 @@ class TranslationsFixerTest extends TestCase
 
     protected function makeDependencies(): void
     {
-        $this->config = $this->app->make(ConfigContract::class);    
+        $this->config = $this->app->make(ConfigContract::class);
         $this->manager = $this->app->make(ManagerContract::class);
         $this->fixer = $this->app->make(FixerContract::class);
     }

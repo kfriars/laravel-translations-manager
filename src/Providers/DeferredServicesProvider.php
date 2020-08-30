@@ -9,21 +9,20 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\Translator;
 use Kfriars\ArrayToFile\Contracts\FileContract;
 use Kfriars\ArrayToFile\File;
-use Kfriars\TranslationsManager\Contracts\ConfigContract;
-use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
 use Kfriars\TranslationsManager\Contracts\ArrayFileContract;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\FixerContract;
 use Kfriars\TranslationsManager\Contracts\FixesValidatorContract;
 use Kfriars\TranslationsManager\Contracts\FormatterContract;
 use Kfriars\TranslationsManager\Contracts\IgnoresContract;
 use Kfriars\TranslationsManager\Contracts\LockfilesContract;
 use Kfriars\TranslationsManager\Contracts\ManagerContract;
+use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
 use Kfriars\TranslationsManager\Contracts\ValidatorContract;
+use Kfriars\TranslationsManager\TranslationsArrayFile;
 use Kfriars\TranslationsManager\TranslationsConfig;
 use Kfriars\TranslationsManager\TranslationsFiles;
-use Kfriars\TranslationsManager\TranslationsArrayFile;
 use Kfriars\TranslationsManager\TranslationsFixer;
-use Kfriars\TranslationsManager\TranslationsFixesJSONFormatter;
 use Kfriars\TranslationsManager\TranslationsFixesValidator;
 use Kfriars\TranslationsManager\TranslationsIgnores;
 use Kfriars\TranslationsManager\TranslationsLockfiles;
@@ -97,7 +96,7 @@ class DeferredServicesProvider extends ServiceProvider implements DeferrableProv
     {
         $this->app->bind(FormatterContract::class, function (Application $app) {
             return $this->app->make(config('translations-manager.formatter'), [
-                $app[ConfigContract::class]
+                $app[ConfigContract::class],
             ]);
         });
 

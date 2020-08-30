@@ -12,7 +12,7 @@ class IgnoreCommandTest extends TestCase
 
     protected function makeDependencies(): void
     {
-        $this->config = $this->app->make(ConfigContract::class);    
+        $this->config = $this->app->make(ConfigContract::class);
     }
     
     /** @test */
