@@ -225,7 +225,9 @@ abstract class TestCase extends Orchestra
 
         if ($filesystem->exists($fix)) {
             $filesystem->copyDirectory($fix, storage_path('translations'.DIRECTORY_SEPARATOR.'fixes'));
-        } else {
+        }
+        
+        if (!$filesystem->exists(storage_path('translations'.DIRECTORY_SEPARATOR.'fixes'))) {
             $filesystem->makeDirectory(storage_path('translations'.DIRECTORY_SEPARATOR.'fixes'));
         }
 
@@ -235,7 +237,9 @@ abstract class TestCase extends Orchestra
         
         if ($filesystem->exists($fixed)) {
             $filesystem->copyDirectory($fixed, storage_path('translations'.DIRECTORY_SEPARATOR.'fixed'));
-        } else {
+        }
+        
+        if (!$filesystem->exists(storage_path('translations'.DIRECTORY_SEPARATOR.'fixed'))) {
             $filesystem->makeDirectory(storage_path('translations'.DIRECTORY_SEPARATOR.'fixed'));
         }
 
