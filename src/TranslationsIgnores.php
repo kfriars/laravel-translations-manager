@@ -2,8 +2,8 @@
 
 namespace Kfriars\TranslationsManager;
 
-use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\ArrayFileContract;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\IgnoresContract;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
 

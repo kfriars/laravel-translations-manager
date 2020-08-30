@@ -18,12 +18,12 @@ class DirectorySeparatorTest extends TestCase
         $mock->shouldReceive('isBackslashDirectorySeparator')
             ->andReturn(true);
 
-        $result = $mock->convertDirectorySeparators('a/b/c/d'); 
+        $result = $mock->convertDirectorySeparators('a/b/c/d');
 
         $this->assertEquals('a\b\c\d', $result);
     }
 
-    /** @test */   
+    /** @test */
     public function it_returns_forwardslashes_otherwise()
     {
         $mock = Mockery::mock(TestDirectorySeparators::class)
@@ -33,12 +33,13 @@ class DirectorySeparatorTest extends TestCase
         $mock->shouldReceive('isBackslashDirectorySeparator')
             ->andReturn(false);
 
-        $result = $mock->convertDirectorySeparators('a\b\c\d'); 
+        $result = $mock->convertDirectorySeparators('a\b\c\d');
 
         $this->assertEquals('a/b/c/d', $result);
     }
 }
 
-class TestDirectorySeparators {
+class TestDirectorySeparators
+{
     use HandlesDirectorySeparators;
 }

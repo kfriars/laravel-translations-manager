@@ -49,7 +49,7 @@ class TranslationsConfigTest extends TestCase
         $this->assertEquals([
             'fixed',
             'fixes',
-            'lock'
+            'lock',
         ], $storage->directories());
     }
 
@@ -60,7 +60,7 @@ class TranslationsConfigTest extends TestCase
 
         $this->assertEquals([
             'a',
-            'c'
+            'c',
         ], $lock->directories());
     }
 }

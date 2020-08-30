@@ -7,8 +7,8 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Translation\Translator;
 use Kfriars\ArrayToFile\Exceptions\FileSaveException;
 use Kfriars\TranslationsManager\Concerns\HandlesDirectorySeparators;
-use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\ArrayFileContract;
+use Kfriars\TranslationsManager\Contracts\ConfigContract;
 use Kfriars\TranslationsManager\Contracts\FixerContract;
 use Kfriars\TranslationsManager\Contracts\FixesValidatorContract;
 use Kfriars\TranslationsManager\Contracts\FormatterContract;
@@ -102,7 +102,7 @@ class TranslationsFixer implements FixerContract
             if ($translations) {
                 $fixes['files'][] = [
                     'file' => $file->path(),
-                    'translations' => $translations
+                    'translations' => $translations,
                 ];
             }
         }

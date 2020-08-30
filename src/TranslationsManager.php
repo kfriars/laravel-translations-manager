@@ -3,9 +3,9 @@
 namespace Kfriars\TranslationsManager;
 
 use Kfriars\TranslationsManager\Contracts\ConfigContract;
-use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
 use Kfriars\TranslationsManager\Contracts\ListingContract;
 use Kfriars\TranslationsManager\Contracts\ManagerContract;
+use Kfriars\TranslationsManager\Contracts\TranslationsFilesContract;
 use Kfriars\TranslationsManager\Contracts\ValidatorContract;
 use Kfriars\TranslationsManager\Entities\ErrorCollection;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;

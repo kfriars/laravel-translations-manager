@@ -38,7 +38,7 @@ class TranslationsConfig implements ConfigContract
      */
     public function lang(): Filesystem
     {
-        return $this->manager->createLocalDriver([ 'root' =>  $this->langDir() ]);
+        return $this->manager->createLocalDriver([ 'root' => $this->langDir() ]);
     }
 
     /**
@@ -90,7 +90,7 @@ class TranslationsConfig implements ConfigContract
      */
     public function lock(): Filesystem
     {
-        return $this->manager->createLocalDriver([ 'root' =>  $this->lockDir() ]);
+        return $this->manager->createLocalDriver([ 'root' => $this->lockDir() ]);
     }
 
     /**
@@ -160,7 +160,7 @@ class TranslationsConfig implements ConfigContract
      */
     public function fixes(): Filesystem
     {
-        return $this->manager->createLocalDriver([ 'root' =>  $this->fixesDir() ]);
+        return $this->manager->createLocalDriver([ 'root' => $this->fixesDir() ]);
     }
     
     /**
@@ -180,7 +180,7 @@ class TranslationsConfig implements ConfigContract
      */
     public function fixed(): Filesystem
     {
-        return $this->manager->createLocalDriver([ 'root' =>  $this->fixedDir() ]);
+        return $this->manager->createLocalDriver([ 'root' => $this->fixedDir() ]);
     }
 
     /**
