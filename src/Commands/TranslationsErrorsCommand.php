@@ -3,8 +3,11 @@
 namespace Kfriars\TranslationsManager\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Kfriars\TranslationsManager\Contracts\ManagerContract;
+use Kfriars\TranslationsManager\Entities\ErrorCollection;
 use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -41,36 +44,62 @@ class TranslationsErrorsCommand extends Command
         $this->line("There are {$numErrors} error(s) in the translations files:");
         $this->line('');
 
-        $separator = new TableSeparator();
+        $this->errorTables($errors);
+
+        return 1;
+    }
+
+    /**
+     * Output all errors as tables
+     *
+     * @param ErrorCollection $errors
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    protected function errorTables(ErrorCollection $errors)
+    {
         $grouped = $errors->groupBy(['locale', 'file']);
 
         foreach ($grouped as $locale => $files) {
             foreach ($files as $file => $errors) {
-                $table = new Table($this->output);
+                $this->errorTable($locale, $file, $errors);
 
-                $table->setHeaders([
-                    [new TableCell($locale.'/'.$file, ['colspan' => 2])],
-                ]);
-
-                $rows = [
-                    ['Key', 'Message'],
-                    $separator,
-                ];
-
-                foreach ($errors as $error) {
-                    $rows[] = [
-                        'key' => $error->key(),
-                        'message' => $error->message(),
-                    ];
-                }
-
-                $table->setRows($rows);
-                $table->render();
                 $this->line('');
                 $this->line('');
             }
         }
+    }
 
-        return 1;
+    /**
+     * Output the errors in a file as a table
+     *
+     * @param string $locale
+     * @param string $file
+     * @param Collection $errors
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    protected function errorTable(string $locale, string $file, Collection $errors): void
+    {
+        $table = new Table($this->output);
+
+        $table->setHeaders([
+            [new TableCell($locale.'/'.$file, ['colspan' => 2])],
+        ]);
+
+        $rows = [
+            ['Key', 'Message'],
+            new TableSeparator(),
+        ];
+
+        foreach ($errors as $error) {
+            $rows[] = [
+                'key' => $error->key(),
+                'message' => $error->message(),
+            ];
+        }
+
+        $table->setRows($rows);
+        $table->render();
     }
 }
