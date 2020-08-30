@@ -2,6 +2,9 @@
 
 namespace Kfriars\TranslationsManager\Contracts;
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Kfriars\TranslationsManager\Exceptions\TranslationsManagerException;
+
 interface FormatterContract
 {
     /**

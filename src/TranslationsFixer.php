@@ -120,7 +120,7 @@ class TranslationsFixer implements FixerContract
     protected function generateForFile(string $referenceLocale, TranslationsFileContract $file): array
     {
         if ($file->errors()->contains('message', Error::FILE_NOT_TRANSLATED)) {
-            return $this->translator->get($file->path(), [], $referenceLocale);
+            return (array) $this->translator->get($file->path(), [], $referenceLocale);
         }
 
         $translations = [];
