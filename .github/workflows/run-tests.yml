@@ -14,8 +14,8 @@ jobs:
         dependency-version: [prefer-lowest, prefer-stable]
         include:
           - laravel: 8.*
+            php: ^7.3
             testbench: 6.*
-            php: 7.3
           - laravel: 7.*
             testbench: 5.*
           - laravel: 6.*
