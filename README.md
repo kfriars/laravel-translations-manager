@@ -1,10 +1,10 @@
 # Laravel Translations Manager
 
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/kfriars/laravel-translations-manager?color=%234ccd98&label=php&logo=php&logoColor=%23fff)
-![Laravel Version Support](https://img.shields.io/badge/laravel-6.x--7.x-%2343d399?logo=laravel&logoColor=%23ffffff)
+![Laravel Version Support](https://img.shields.io/badge/laravel-6.x,%207.x,%208.x-%2343d399?logo=laravel&logoColor=%23ffffff)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/kfriars/laravel-translations-manager.svg?color=%234ccd98&style=flat-square)](https://packagist.org/packages/kfriars/laravel-translations-manager)
 [![Total Downloads](https://img.shields.io/packagist/dt/kfriars/laravel-translations-manager.svg?color=%234ccd98&style=flat-square)](https://packagist.org/packages/kfriars/laravel-translations-manager)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/kfriars/laravel-translations-manager/Tests?color=%234ccd98&label=Tests&logo=github&logoColor=%23fff)](https://github.com/kfriars/php-array-to-file/actions?query=workflow%3ATests)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/kfriars/laravel-translations-manager/Tests?color=%234ccd98&label=Tests&logo=github&logoColor=%23fff)](https://github.com/kfriars/laravel-translations-manager/actions?query=workflow%3ATests)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/kfriars/laravel-translations-manager?color=%234ccd98&label=test%20coverage&logo=code-climate&logoColor=%23fff)](https://codeclimate.com/github/kfriars/laravel-translations-manager/test_coverage)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/kfriars/laravel-translations-manager?color=%234ccd98&label=maintainablility&logo=code-climate&logoColor=%23fff)](https://codeclimate.com/github/kfriars/laravel-translations-manager/maintainability)
 

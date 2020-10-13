@@ -16,11 +16,11 @@
         }
     ],
     "require": {
-        "illuminate/console": "^6|^7",
-        "illuminate/contracts": "^6|^7",
-        "illuminate/filesystem": "^6|^7",
-        "illuminate/support": "^6|^7",
-        "illuminate/translation": "^6|^7",
+        "illuminate/console": "^6|^7|^8",
+        "illuminate/contracts": "^6|^7|^8",
+        "illuminate/filesystem": "^6|^7|^8",
+        "illuminate/support": "^6|^7|^8",
+        "illuminate/translation": "^6|^7|^8",
         "kfriars/php-array-to-file": "^1.1.2",
         "league/flysystem": "^1.0.34",
         "php": "^7.2"
