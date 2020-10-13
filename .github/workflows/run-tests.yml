@@ -65,6 +65,7 @@ jobs:
         php: [7.3, 7.4]
         laravel: [8.*]
         mockery: [^1.4]
+        testbench: [6.*]
         dependency-version: [prefer-lowest, prefer-stable]
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
@@ -108,10 +109,9 @@ jobs:
         os: [ubuntu-latest]
         php: [7.4]
         laravel: [8.*]
+        mockery: [^1.4]
+        testbench: [6.*]
         dependency-version: [prefer-stable]
-        include:
-          - laravel: 8.*
-            testbench: 6.*
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
