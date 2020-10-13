@@ -100,7 +100,7 @@ jobs:
         run: composer test
 
   coverage:
-    needs: [ test ]
+    needs: [ test-6-7, test-8 ]
     name: coverage
     runs-on: ubuntu-latest
     strategy:
